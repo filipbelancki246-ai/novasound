@@ -1,0 +1,2040 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaSound — музыка для всех</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+
+<div class="logo">
+    <div class="logo-icon"></div>
+    <div class="logo-text">
+        <span>Nova</span><span>Sound</span>
+    </div>
+</div>
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(145deg, #ff2a2a, #b30000);
+    border-radius: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 15px rgba(255,0,0,0.5);
+}
+
+.logo-icon::before {
+    content: "▶";
+    color: white;
+    font-size: 20px;
+    margin-left: 2px;
+}
+
+.logo-text {
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.logo-text span:first-child {
+    color: white;
+}
+
+.logo-text span:last-child {
+    color: #ff2a2a;
+}
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0a0c14 0%, #1a1f2f 100%);
+            --player-bg: rgba(18, 22, 38, 0.85);
+            --card-bg: rgba(255, 255, 255, 0.02);
+            --text-primary: #ffffff;
+            --text-secondary: #9aa4cf;
+            --accent: #7a8cff;
+            --accent-gradient: linear-gradient(145deg, #7a8cff, #3a4fd0);
+            --border-color: rgba(255, 255, 255, 0.05);
+            --hover-bg: rgba(110, 130, 255, 0.15);
+            --settings-bg: #1e2437;
+        }
+
+        body.light-theme {
+            --bg-gradient: linear-gradient(135deg, #f0f2f8 0%, #e2e6f0 100%);
+            --player-bg: rgba(240, 244, 255, 0.85);
+            --card-bg: rgba(0, 0, 0, 0.02);
+            --text-primary: #1a1f2f;
+            --text-secondary: #4a5280;
+            --accent: #5a6ce0;
+            --accent-gradient: linear-gradient(145deg, #5a6ce0, #3a4fd0);
+            --border-color: rgba(0, 0, 0, 0.05);
+            --hover-bg: rgba(90, 108, 224, 0.1);
+            --settings-bg: #ffffff;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--bg-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            transition: 0.3s;
+        }
+
+        /* Модальное окно авторизации */
+        .auth-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .auth-modal.hidden {
+            display: none;
+        }
+
+        .auth-card {
+            background: var(--settings-bg);
+            border-radius: 40px;
+            padding: 40px;
+            width: 420px;
+            max-width: 90%;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        .auth-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .auth-logo .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--accent-gradient);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+        }
+
+        .auth-logo h2 {
+            font-size: 32px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .auth-tab {
+            color: var(--text-secondary);
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            padding: 5px 0;
+        }
+
+        .auth-tab.active {
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .auth-form.hidden {
+            display: none;
+        }
+
+        .auth-input {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 16px 20px;
+            color: var(--text-primary);
+            font-size: 16px;
+            outline: none;
+        }
+
+        .auth-input:focus {
+            border-color: var(--accent);
+        }
+
+        .auth-btn {
+            background: var(--accent-gradient);
+            border: none;
+            border-radius: 30px;
+            padding: 16px;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .auth-btn:hover {
+            transform: scale(1.02);
+            opacity: 0.9;
+        }
+
+        /* Главный плеер */
+        .nova-player {
+            width: 1500px;
+            max-width: 100%;
+            background: var(--player-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 48px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+            padding: 28px;
+            color: var(--text-primary);
+        }
+
+        .nova-player.hidden {
+            display: none;
+        }
+
+        /* Верхняя панель */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding: 0 12px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--accent-gradient);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon i {
+            font-size: 28px;
+            color: white;
+        }
+
+        .logo h1 {
+            font-size: 30px;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--text-primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-menu {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .user-menu i {
+            font-size: 24px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .user-menu i:hover {
+            color: var(--text-primary);
+            transform: scale(1.1);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 6px 16px 6px 6px;
+            border-radius: 40px;
+            background: var(--card-bg);
+            transition: 0.2s;
+        }
+
+        .user-profile:hover {
+            background: var(--hover-bg);
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #ff8a5c, #ff5e7c);
+            border-radius: 30px;
+            background-size: cover;
+            background-position: center;
+            border: 2px solid var(--accent);
+        }
+
+        .avatar-upload {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .avatar-upload input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .avatar-upload .avatar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: 0.2s;
+            color: white;
+            font-size: 14px;
+        }
+
+        .avatar-upload:hover .avatar-overlay {
+            opacity: 1;
+        }
+
+        /* Навигация */
+        .main-nav {
+            display: flex;
+            gap: 40px;
+            padding: 0 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            overflow-x: auto;
+        }
+
+        .nav-item {
+            color: var(--text-secondary);
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 5px 0;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .nav-item.active {
+            color: var(--text-primary);
+        }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -16px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        /* Контент */
+        .content-area {
+            min-height: 500px;
+            transition: 0.3s;
+        }
+
+        .content-area.hidden {
+            display: none;
+        }
+
+        /* Главная страница */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 2.5fr 1.2fr;
+            gap: 24px;
+        }
+
+        .greeting {
+            background: var(--card-bg);
+            border-radius: 36px;
+            padding: 28px 24px;
+            border: 1px solid var(--border-color);
+        }
+
+        .greeting h2 {
+            font-size: 28px;
+            font-weight: 400;
+            color: var(--text-primary);
+        }
+
+        .greeting h2 span {
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--text-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .greeting p {
+            color: var(--text-secondary);
+            margin: 8px 0 30px;
+        }
+
+        .quick-links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .quick-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: var(--text-secondary);
+            padding: 12px 16px;
+            border-radius: 28px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .quick-item:hover {
+            background: var(--hover-bg);
+            color: var(--text-primary);
+        }
+
+        .quick-item.active {
+            background: var(--hover-bg);
+            color: var(--text-primary);
+            border-left: 3px solid var(--accent);
+        }
+
+        /* Поиск */
+        .search-page {
+            padding: 20px;
+        }
+
+        .search-header {
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 20px 30px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 60px;
+            color: var(--text-primary);
+            font-size: 18px;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+        }
+
+        .search-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .category-item {
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid var(--border-color);
+        }
+
+        .category-item:hover {
+            background: var(--hover-bg);
+            transform: translateY(-5px);
+        }
+
+        .category-item i {
+            font-size: 40px;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+
+        .category-tag {
+            display: inline-block;
+            padding: 8px 20px;
+            background: var(--accent);
+            border-radius: 30px;
+            color: white;
+            margin: 5px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .category-tag:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+
+        /* Медиатека */
+        .library-page {
+            padding: 20px;
+        }
+
+        .library-header {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .library-tab {
+            color: var(--text-secondary);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 5px 0;
+        }
+
+        .library-tab.active {
+            color: var(--text-primary);
+            border-bottom: 3px solid var(--accent);
+        }
+
+        .artist-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .artist-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.2s;
+            background: var(--card-bg);
+        }
+
+        .artist-item:hover {
+            background: var(--hover-bg);
+        }
+
+        .artist-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 30px;
+            background: linear-gradient(145deg, #feac6d, #e65775);
+            background-size: cover;
+        }
+
+        .artist-info h4 {
+            font-size: 18px;
+            color: var(--text-primary);
+        }
+
+        .artist-info p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Premium страница */
+        .premium-page {
+            padding: 20px;
+        }
+
+        .premium-hero {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .premium-hero h2 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffd700, #ff8a5c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .premium-hero p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+
+        .premium-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .feature-item {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .feature-item i {
+            font-size: 40px;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+
+        .feature-item h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .feature-item p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .premium-plans {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .plan-card {
+            background: var(--card-bg);
+            border-radius: 40px;
+            padding: 30px;
+            border: 2px solid transparent;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .plan-card:hover {
+            border-color: var(--accent);
+            transform: scale(1.02);
+        }
+
+        .plan-card.popular {
+            border-color: var(--accent);
+            background: linear-gradient(145deg, var(--card-bg), rgba(122, 140, 255, 0.1));
+        }
+
+        .plan-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background: var(--accent);
+            border-radius: 30px;
+            color: white;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        .plan-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .plan-price {
+            font-size: 20px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .plan-features li {
+            padding: 10px 0;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .plan-features i {
+            color: var(--accent);
+            font-size: 16px;
+        }
+
+        .plan-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--accent-gradient);
+            border: none;
+            border-radius: 30px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .plan-btn:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
+
+        .free-trial {
+            text-align: center;
+            margin: 40px 0;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 30px;
+        }
+
+        .free-trial h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .free-trial p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        /* Страница настроек */
+        .settings-page {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            background: var(--card-bg);
+            border-radius: 40px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+        }
+
+        .settings-sidebar {
+            border-right: 1px solid var(--border-color);
+            padding-right: 20px;
+        }
+
+        .settings-sidebar .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 30px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .settings-sidebar .profile-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #ff8a5c, #ff5e7c);
+            border-radius: 40px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .avatar-edit {
+            position: absolute;
+            bottom: 15px;
+            left: 55px;
+            background: var(--accent);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            border: 2px solid var(--settings-bg);
+        }
+
+        .settings-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .settings-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            border-radius: 20px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .settings-menu-item i {
+            width: 24px;
+            font-size: 18px;
+        }
+
+        .settings-menu-item:hover {
+            background: var(--hover-bg);
+            color: var(--text-primary);
+        }
+
+        .settings-menu-item.active {
+            background: var(--hover-bg);
+            color: var(--text-primary);
+            border-left: 3px solid var(--accent);
+        }
+
+        .settings-content {
+            padding: 0 20px;
+        }
+
+        .settings-section {
+            display: none;
+        }
+
+        .settings-section.active {
+            display: block;
+        }
+
+        .settings-section h2 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: var(--text-primary);
+        }
+
+        .settings-group {
+            background: var(--card-bg);
+            border-radius: 30px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .settings-group h3 {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info {
+            flex: 1;
+        }
+
+        .setting-info .title {
+            font-size: 16px;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .setting-info .subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .setting-value {
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-switch {
+            width: 50px;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            position: relative;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: var(--accent);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: 0.3s;
+        }
+
+        .toggle-switch.active::after {
+            left: 24px;
+        }
+
+        .select-box {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 10px 20px;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        .language-option {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .language-option:hover {
+            background: var(--hover-bg);
+        }
+
+        .language-option.active {
+            background: var(--hover-bg);
+            border: 1px solid var(--accent);
+        }
+
+        .language-option .flag {
+            font-size: 24px;
+        }
+
+        .radio-btn {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--text-secondary);
+            border-radius: 50%;
+            margin-left: auto;
+        }
+
+        .language-option.active .radio-btn {
+            border-color: var(--accent);
+            background: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        .theme-option {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .theme-option:hover {
+            background: var(--hover-bg);
+        }
+
+        .theme-option.active {
+            border-color: var(--accent);
+            background: var(--hover-bg);
+        }
+
+        .theme-preview {
+            width: 60px;
+            height: 60px;
+            border-radius: 30px;
+        }
+
+        .theme-preview.dark {
+            background: linear-gradient(135deg, #0a0c14, #1a1f2f);
+            border: 2px solid #7a8cff;
+        }
+
+        .theme-preview.light {
+            background: linear-gradient(135deg, #f0f2f8, #e2e6f0);
+            border: 2px solid #5a6ce0;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 16px;
+            background: rgba(255, 80, 80, 0.1);
+            border: 1px solid rgba(255, 80, 80, 0.3);
+            border-radius: 30px;
+            color: #ff6b6b;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 80, 80, 0.2);
+        }
+
+        /* Нижний плеер */
+        .now-playing-bar {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 120px;
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid var(--border-color);
+            margin-top: 30px;
+        }
+
+        .track-info-mini {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            width: 30%;
+        }
+
+        .mini-cover {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #feac6d, #e65775);
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .track-text h4 {
+            font-size: 18px;
+            color: var(--text-primary);
+        }
+
+        .track-text p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .player-controls i {
+            font-size: 24px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .player-controls i:hover {
+            color: var(--text-primary);
+            transform: scale(1.1);
+        }
+
+        .player-controls .play-pause {
+            font-size: 48px;
+            color: var(--text-primary);
+        }
+
+        .volume-control {
+            width: 30%;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .volume-bar {
+            width: 120px;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .volume-progress {
+            width: 70%;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 10px;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .settings-page {
+                grid-template-columns: 1fr;
+            }
+
+            .settings-sidebar {
+                border-right: none;
+                padding-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Модалка авторизации -->
+    <div class="auth-modal" id="authModal">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <div class="logo-icon"><i class="fas fa-saturn"></i></div>
+                <h2>NovaSound</h2>
+            </div>
+
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="loginTab">Вход</div>
+                <div class="auth-tab" id="registerTab">Регистрация</div>
+            </div>
+
+            <div class="auth-form" id="loginForm">
+                <input type="email" class="auth-input" placeholder="Email" id="loginEmail" value="user@example.com">
+                <input type="password" class="auth-input" placeholder="Пароль" id="loginPassword" value="123456">
+                <button class="auth-btn" id="loginBtn">Войти</button>
+            </div>
+
+            <div class="auth-form hidden" id="registerForm">
+                <input type="text" class="auth-input" placeholder="Имя" id="regName">
+                <input type="email" class="auth-input" placeholder="Email" id="regEmail">
+                <input type="password" class="auth-input" placeholder="Пароль" id="regPassword">
+                <button class="auth-btn" id="registerBtn">Создать аккаунт</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Главный плеер -->
+    <div class="nova-player hidden" id="player">
+        <div class="top-bar">
+            <div class="logo" id="homeBtn">
+                <div class="logo-icon"><i class="fas fa-saturn"></i></div>
+                <h1>NovaSound</h1>
+            </div>
+            <div class="user-menu">
+                <i class="fas fa-bell" id="notificationsBtn"></i>
+                <div class="user-profile" id="profileBtn">
+                    <div class="avatar-upload" id="avatarUpload">
+                        <div class="avatar" id="userAvatar"></div>
+                        <div class="avatar-overlay">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <input type="file" id="avatarInput" accept="image/*">
+                    </div>
+                    <span class="user-name" id="userName">Пилип</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Навигация -->
+        <div class="main-nav">
+            <div class="nav-item active" data-page="home">Главная</div>
+            <div class="nav-item" data-page="search">Поиск</div>
+            <div class="nav-item" data-page="library">Моя медиатека</div>
+            <div class="nav-item" data-page="premium">Premium</div>
+            <div class="nav-item" data-page="settings">Настройки</div>
+        </div>
+
+        <!-- Главная страница -->
+        <div class="content-area" id="homePage">
+            <div class="main-grid">
+                <div class="greeting">
+                    <h2>Привет, <span id="greetingName">Пилип</span></h2>
+                    <p>Твоя музыка ждет</p>
+                    <div class="quick-links">
+                        <div class="quick-item active"><i class="fas fa-heart"></i> Любимые треки</div>
+                        <div class="quick-item"><i class="fas fa-clock"></i> Недавние</div>
+                        <div class="quick-item"><i class="fas fa-users"></i> Для двоих</div>
+                        <div class="quick-item"><i class="fas fa-microchip"></i> Смарт-микс</div>
+                    </div>
+                </div>
+
+                <div class="greeting" style="padding: 20px;">
+                    <h3 style="margin-bottom: 20px;">Слушаем дальше?</h3>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <div style="display: flex; align-items: center; gap: 15px; padding: 10px; border-radius: 20px; background: var(--card-bg); cursor: pointer;">
+                            <div style="width: 50px; height: 50px; background: linear-gradient(145deg, #feac6d, #e65775); border-radius: 15px;"></div>
+                            <div>
+                                <strong>kizaru: микс</strong><br>
+                                <span style="color: var(--text-secondary);">50 Cent, 2Pac</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 15px; padding: 10px; border-radius: 20px; background: var(--card-bg); cursor: pointer;">
+                            <div style="width: 50px; height: 50px; background: linear-gradient(145deg, #73b5fe, #616fdb); border-radius: 15px;"></div>
+                            <div>
+                                <strong>FRIENDLY THUG 52 NGG</strong><br>
+                                <span style="color: var(--text-secondary);">ALBLAK 52, Baby Melo</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; color: var(--text-secondary);">
+                        <i class="fas fa-headphones"></i> HEARTBEAT · 🎵 JEEMBO
+                    </div>
+                    <div style="margin-top: 10px; color: var(--text-secondary);">
+                        <i class="fas fa-headphones"></i> 🎵 AirPods Pro (фил)
+                    </div>
+                </div>
+
+                <div class="greeting">
+                    <h3 style="margin-bottom: 20px;">Твои миксы</h3>
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <div style="display: flex; align-items: center; gap: 15px; padding: 10px; border-radius: 20px; cursor: pointer; background: var(--card-bg);">
+                            <i class="fas fa-wave-square" style="color: var(--accent);"></i>
+                            <div>
+                                <strong>Космический дабстеп</strong>
+                                <p style="color: var(--text-secondary); font-size: 14px;">Похоже на выбранный тобой альбом</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 15px; padding: 10px; border-radius: 20px; cursor: pointer; background: var(--card-bg);">
+                            <i class="fas fa-wave-square" style="color: var(--accent);"></i>
+                            <div>
+                                <strong>Чиллейшн</strong>
+                                <p style="color: var(--text-secondary); font-size: 14px;">Для расслабления</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Страница поиска -->
+        <div class="content-area hidden" id="searchPage">
+            <div class="search-page">
+                <div class="search-header">
+                    <input type="text" class="search-input" placeholder="Что хочешь послушать?" value="kazakh hip-hop">
+                </div>
+
+                <h3 style="margin: 30px 0 20px;">Открой новое для себя</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px;">
+                    <span class="category-tag">#казахский хип-хоп</span>
+                    <span class="category-tag">#британский хаус</span>
+                    <span class="category-tag">#скаус-х</span>
+                </div>
+
+                <h3 style="margin: 30px 0 20px;">Все остальное</h3>
+                <div class="search-categories">
+                    <div class="category-item">
+                        <i class="fas fa-music"></i>
+                        <h4>Музыка</h4>
+                    </div>
+                    <div class="category-item">
+                        <i class="fas fa-podcast"></i>
+                        <h4>Подкасты</h4>
+                    </div>
+                    <div class="category-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h4>Мероприятия</h4>
+                    </div>
+                    <div class="category-item">
+                        <i class="fas fa-star"></i>
+                        <h4>Для тебя</h4>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; padding: 20px; background: var(--card-bg); border-radius: 30px;">
+                    <p style="color: var(--text-secondary);">Похоже на выбранный тобой альбом</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Страница медиатеки -->
+        <div class="content-area hidden" id="libraryPage">
+            <div class="library-page">
+                <div class="library-header">
+                    <div class="library-tab active">Исполнители</div>
+                    <div class="library-tab">Плейлисты</div>
+                    <div class="library-tab">Альбомы</div>
+                    <div class="library-tab">Подкасты</div>
+                </div>
+
+                <div style="margin-bottom: 20px; color: var(--text-secondary);">
+                    <i class="fas fa-arrow-down"></i> Название
+                </div>
+
+                <div class="artist-list">
+                    <div class="artist-item">
+                        <div class="artist-avatar" style="background: linear-gradient(145deg, #ff8a5c, #ff5e7c);"></div>
+                        <div class="artist-info">
+                            <h4>Icegergert</h4>
+                            <p>Исполнитель</p>
+                        </div>
+                    </div>
+                    <div class="artist-item">
+                        <div class="artist-avatar" style="background: linear-gradient(145deg, #73b5fe, #616fdb);"></div>
+                        <div class="artist-info">
+                            <h4>ТЯЖЁЛАЯ АТЛЕТИКА</h4>
+                            <p>Исполнитель</p>
+                        </div>
+                    </div>
+                    <div class="artist-item">
+                        <div class="artist-avatar" style="background: linear-gradient(145deg, #feac6d, #e65775);"></div>
+                        <div class="artist-info">
+                            <h4>2Pac</h4>
+                            <p>Исполнитель</p>
+                        </div>
+                    </div>
+                    <div class="artist-item">
+                        <div class="artist-avatar" style="background: linear-gradient(145deg, #a0e6b0, #299c8d);"></div>
+                        <div class="artist-info">
+                            <h4>KRBK</h4>
+                            <p>Исполнитель</p>
+                        </div>
+                    </div>
+                    <div class="artist-item">
+                        <div class="artist-avatar" style="background: linear-gradient(145deg, #b1f0cf, #54b4a4);"></div>
+                        <div class="artist-info">
+                            <h4>Eminem</h4>
+                            <p>Исполнитель</p>
+                        </div>
+                    </div>
+                    <div class="artist-item">
+                        <div class="artist-avatar" style="background: linear-gradient(145deg, #fbc2c2, #b993d6);"></div>
+                        <div class="artist-info">
+                            <h4>50 Cent</h4>
+                            <p>Исполнитель</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; color: var(--text-secondary);">
+                    <i class="fas fa-headphones"></i> HEARTBEAT · 🎵 JEEMBO
+                </div>
+                <div style="margin-top: 10px; color: var(--text-secondary);">
+                    <i class="fas fa-headphones"></i> 🎵 AirPods Pro (фил)
+                </div>
+            </div>
+        </div>
+
+        <!-- Страница Premium -->
+        <div class="content-area hidden" id="premiumPage">
+            <div class="premium-page">
+                <div class="premium-hero">
+                    <h2>Слушайте музыку без ограничений</h2>
+                    <p>Индивидуальная подписка Premium — 1 месяц бесплатно</p>
+                    <button class="plan-btn" style="width: auto; padding: 15px 60px;" id="startPremiumBtn">Начать</button>
+                </div>
+
+                <h3 style="margin: 40px 0 20px;">Что дает Premium-подписка?</h3>
+                <div class="premium-features">
+                    <div class="feature-item">
+                        <i class="fas fa-ban"></i>
+                        <h4>Музыка без рекламы</h4>
+                        <p>Никаких перерывов</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-download"></i>
+                        <h4>Скачивание треков</h4>
+                        <p>Слушай офлайн</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-random"></i>
+                        <h4>Треки в любом порядке</h4>
+                        <p>Любая последовательность</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-headphones"></i>
+                        <h4>Высокое качество</h4>
+                        <p>320 kbps</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-users"></i>
+                        <h4>Групповые сеансы</h4>
+                        <p>Слушайте с друзьями</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-list"></i>
+                        <h4>Добавление в очередь</h4>
+                        <p>Управляй очередью</p>
+                    </div>
+                </div>
+
+                <div class="free-trial">
+                    <h3>Бесплатно 1 месяц</h3>
+                    <p>Попробуй Premium бесплатно. Отмена в любой момент.</p>
+                    <button class="plan-btn" style="width: auto; padding: 15px 40px;">Начать бесплатный период</button>
+                </div>
+
+                <h3 style="margin: 40px 0 20px;">Доступные планы</h3>
+                <div class="premium-plans">
+                    <div class="plan-card">
+                        <h3>Premium Индивидуальная</h3>
+                        <div class="plan-price">169 ₽/мес</div>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check"></i> 1 Premium-аккаунт</li>
+                            <li><i class="fas fa-check"></i> Отмена в любой момент</li>
+                            <li><i class="fas fa-check"></i> Музыка без рекламы</li>
+                        </ul>
+                        <button class="plan-btn">Начать</button>
+                    </div>
+
+                    <div class="plan-card popular">
+                        <span class="plan-badge">Популярное</span>
+                        <h3>Premium для двоих</h3>
+                        <div class="plan-price">219 ₽/мес</div>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check"></i> 2 Premium-аккаунта</li>
+                            <li><i class="fas fa-check"></i> Отмена в любой момент</li>
+                            <li><i class="fas fa-check"></i> Экономия 30%</li>
+                        </ul>
+                        <button class="plan-btn">Начать</button>
+                    </div>
+
+                    <div class="plan-card">
+                        <h3>Premium для семьи</h3>
+                        <div class="plan-price">269 ₽/мес</div>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check"></i> До 6 Premium-аккаунтов</li>
+                            <li><i class="fas fa-check"></i> Родительский контроль</li>
+                            <li><i class="fas fa-check"></i> Отмена в любой момент</li>
+                        </ul>
+                        <button class="plan-btn">Начать</button>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px; padding: 20px; background: var(--card-bg); border-radius: 30px;">
+                    <h4 style="margin-bottom: 15px;">Дополнительные возможности:</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                        <div><i class="fas fa-play-circle" style="color: var(--accent); margin-right: 10px;"></i> Плейлист</div>
+                        <div><i class="fas fa-users" style="color: var(--accent); margin-right: 10px;"></i> Общий плейлист</div>
+                        <div><i class="fas fa-sync-alt" style="color: var(--accent); margin-right: 10px;"></i> Синтез</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Страница настроек -->
+        <div class="content-area hidden" id="settingsPage">
+            <div class="settings-page">
+                <div class="settings-sidebar">
+                    <div class="profile-header" id="settingsProfileBtn">
+                        <div class="profile-avatar" id="settingsAvatar"></div>
+                        <div class="avatar-edit" id="settingsAvatarEdit">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <div class="profile-name">
+                            <h3 id="settingsUserName">Пилип</h3>
+                            <p>Смотреть профиль</p>
+                        </div>
+                        <input type="file" id="settingsAvatarInput" accept="image/*" style="display: none;">
+                    </div>
+
+                    <div class="settings-menu">
+                        <div class="settings-menu-item active" data-settings="account">
+                            <i class="fas fa-user"></i>
+                            <span>Аккаунт</span>
+                        </div>
+                        <div class="settings-menu-item" data-settings="appearance">
+                            <i class="fas fa-palette"></i>
+                            <span>Контент и внешний вид</span>
+                        </div>
+                        <div class="settings-menu-item" data-settings="privacy">
+                            <i class="fas fa-lock"></i>
+                            <span>Конфиденциальность</span>
+                        </div>
+                        <div class="settings-menu-item" data-settings="playback">
+                            <i class="fas fa-play"></i>
+                            <span>Воспроизведение</span>
+                        </div>
+                        <div class="settings-menu-item" data-settings="notifications">
+                            <i class="fas fa-bell"></i>
+                            <span>Уведомления</span>
+                        </div>
+                        <div class="settings-menu-item" data-settings="devices">
+                            <i class="fas fa-mobile-alt"></i>
+                            <span>Приложения и устройства</span>
+                        </div>
+                        <div class="settings-menu-item" data-settings="traffic">
+                            <i class="fas fa-wifi"></i>
+                            <span>Трафик и офлайн</span>
+                        </div>
+                        <div class="settings-menu-item" data-settings="quality">
+                            <i class="fas fa-music"></i>
+                            <span>Качество медиафайлов</span>
+                        </div>
+                        <div class="settings-menu-item" data-settings="ads">
+                            <i class="fas fa-ad"></i>
+                            <span>Реклама</span>
+                        </div>
+                        <div class="settings-menu-item" data-settings="info">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Инфо</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-content">
+                    <!-- Аккаунт -->
+                    <div class="settings-section active" id="accountSection">
+                        <h2>Аккаунт</h2>
+                        <div class="settings-group">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="title">Имя пользователя</div>
+                                    <div class="subtitle">Пилип</div>
+                                </div>
+                                <div class="setting-value">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="title">Premium-подписки</div>
+                                    <div class="subtitle">Активна до 15.03.2026</div>
+                                </div>
+                                <div class="setting-value">
+                                    <span style="background: var(--accent); padding: 5px 10px; border-radius: 20px; color: white; font-size: 12px;">Premium</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Внешний вид -->
+                    <div class="settings-section" id="appearanceSection">
+                        <h2>Контент и внешний вид</h2>
+                        <div class="settings-group">
+                            <h3>Тема оформления</h3>
+                            <div class="theme-option active" data-theme="dark">
+                                <div class="theme-preview dark"></div>
+                                <div>
+                                    <strong>Темная тема</strong>
+                                    <p style="color: var(--text-secondary);">Космическая атмосфера</p>
+                                </div>
+                                <div class="radio-btn"></div>
+                            </div>
+                            <div class="theme-option" data-theme="light">
+                                <div class="theme-preview light"></div>
+                                <div>
+                                    <strong>Светлая тема</strong>
+                                    <p style="color: var(--text-secondary);">Яркий минимализм</p>
+                                </div>
+                                <div class="radio-btn"></div>
+                            </div>
+                        </div>
+
+                        <div class="settings-group">
+                            <h3>Язык приложения</h3>
+                            <div class="language-option active" data-lang="ru">
+                                <span class="flag">🇷🇺</span>
+                                <span>Русский</span>
+                                <div class="radio-btn"></div>
+                            </div>
+                            <div class="language-option" data-lang="uk">
+                                <span class="flag">🇺🇦</span>
+                                <span>Українська</span>
+                                <div class="radio-btn"></div>
+                            </div>
+                            <div class="language-option" data-lang="en">
+                                <span class="flag">🇬🇧</span>
+                                <span>English</span>
+                                <div class="radio-btn"></div>
+                            </div>
+                        </div>
+
+                        <div class="settings-group">
+                            <h3>Canvas</h3>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="title">Анимированные обложки</div>
+                                    <div class="subtitle">Показывать Canvas при воспроизведении</div>
+                                </div>
+                                <div class="toggle-switch active" id="canvasToggle"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Конфиденциальность -->
+                    <div class="settings-section" id="privacySection">
+                        <h2>Конфиденциальность и приватность</h2>
+                        <div class="settings-group">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="title">Приватный режим</div>
+                                    <div class="subtitle">Скрывать активность от друзей</div>
+                                </div>
+                                <div class="toggle-switch" id="privateToggle"></div>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="title">Открытые плейлисты</div>
+                                    <div class="subtitle">Кто может видеть твои плейлисты</div>
+                                </div>
+                                <div class="setting-value">
+                                    <span class="select-box">Все</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Воспроизведение -->
+                    <div class="settings-section" id="playbackSection">
+                        <h2>Воспроизведение</h2>
+                        <div class="settings-group">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="title">Без пауз</div>
+                                    <div class="subtitle">Плавное переключение треков</div>
+                                </div>
+                                <div class="toggle-switch active" id="gaplessToggle"></div>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="title">Музыка нон-стоп</div>
+                                    <div class="subtitle">Автоматическое продолжение</div>
+                                </div>
+                                <div class="toggle-switch active" id="autoplayToggle"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Уведомления -->
+                    <div class="settings-section" id="notificationsSection">
+                        <h2>Уведомления</h2>
+                        <div class="settings-group">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="title">Push-уведомления</div>
+                                </div>
+                                <div class="toggle-switch active"></div>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="title">Электронные письма</div>
+                                </div>
+                                <div class="toggle-switch"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Приложения и устройства -->
+                    <div class="settings-section" id="devicesSection">
+                        <h2>Приложения и устройства</h2>
+                        <div class="settings-group">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="title">Google Карты</div>
+                                    <div class="subtitle">Показывать музыку в навигации</div>
+                                </div>
+                                <div class="toggle-switch"></div>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="title">Управление Spotify Connect</div>
+                                </div>
+                                <div class="setting-value">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Трафик и офлайн -->
+                    <div class="settings-section" id="trafficSection">
+                        <h2>Трафик и офлайн-режим</h2>
+                        <div class="settings-group">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="title">Экономия трафика</div>
+                                </div>
+                                <div class="toggle-switch"></div>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="title">Скачивание по мобильной сети</div>
+                                </div>
+                                <div class="toggle-switch"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Качество медиафайлов -->
+                    <div class="settings-section" id="qualitySection">
+                        <h2>Качество медиафайлов</h2>
+                        <div class="settings-group">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="title">Прослушивание через Wi-Fi</div>
+                                </div>
+                                <div class="setting-value">
+                                    <span class="select-box">Очень высокое</span>
+                                </div>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="title">Качество аудио</div>
+                                </div>
+                                <div class="setting-value">
+                                    <span class="select-box">320 kbps</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Реклама -->
+                    <div class="settings-section" id="adsSection">
+                        <h2>Реклама</h2>
+                        <div class="settings-group">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="title">Персонализированная реклама</div>
+                                </div>
+                                <div class="toggle-switch"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Инфо -->
+                    <div class="settings-section" id="infoSection">
+                        <h2>Инфо</h2>
+                        <div class="settings-group">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="title">Версия</div>
+                                    <div class="subtitle">1.0.0 (build 2025.02)</div>
+                                </div>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="title">Политика конфиденциальности</div>
+                                </div>
+                                <div class="setting-value">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="logout-btn" id="settingsLogout">
+                        <i class="fas fa-sign-out-alt" style="margin-right: 10px;"></i>
+                        Выйти
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Нижний плеер -->
+        <div class="now-playing-bar">
+            <div class="track-info-mini">
+                <div class="mini-cover"></div>
+                <div class="track-text">
+                    <h4>Supernova</h4>
+                    <p>Coldplay X BTS</p>
+                </div>
+                <i class="fas fa-heart" style="color: #ff7b7b;"></i>
+            </div>
+
+            <div class="player-controls">
+                <i class="fas fa-random" id="shuffleBtn"></i>
+                <i class="fas fa-step-backward" id="prevBtn"></i>
+                <i class="fas fa-play-circle play-pause" id="playPauseBtn"></i>
+                <i class="fas fa-step-forward" id="nextBtn"></i>
+                <i class="fas fa-redo-alt" id="repeatBtn"></i>
+            </div>
+
+            <div class="volume-control">
+                <i class="fas fa-volume-up"></i>
+                <div class="volume-bar" id="volumeBar">
+                    <div class="volume-progress" style="width: 70%;" id="volumeProgress"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Состояние
+        let currentUser = { name: 'Пилип' };
+        let isPlaying = false;
+        let currentTheme = 'dark';
+        let currentLanguage = 'ru';
+
+        // DOM элементы
+        const authModal = document.getElementById('authModal');
+        const player = document.getElementById('player');
+        const homePage = document.getElementById('homePage');
+        const searchPage = document.getElementById('searchPage');
+        const libraryPage = document.getElementById('libraryPage');
+        const premiumPage = document.getElementById('premiumPage');
+        const settingsPage = document.getElementById('settingsPage');
+        const navItems = document.querySelectorAll('.nav-item');
+        const settingsMenuItems = document.querySelectorAll('.settings-menu-item');
+        const settingsSections = document.querySelectorAll('.settings-section');
+        const themeOptions = document.querySelectorAll('.theme-option');
+        const languageOptions = document.querySelectorAll('.language-option');
+        const logoutBtns = document.querySelectorAll('#logoutBtn, #settingsLogout');
+        const homeBtn = document.getElementById('homeBtn');
+        const profileBtn = document.getElementById('profileBtn');
+
+        // Загрузка аватара
+        const avatarInput = document.getElementById('avatarInput');
+        const userAvatar = document.getElementById('userAvatar');
+        const settingsAvatar = document.getElementById('settingsAvatar');
+        const settingsAvatarInput = document.getElementById('settingsAvatarInput');
+        const settingsAvatarEdit = document.getElementById('settingsAvatarEdit');
+        const settingsProfileBtn = document.getElementById('settingsProfileBtn');
+
+        function handleAvatarUpload(file, avatarElements) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageUrl = e.target.result;
+                avatarElements.forEach(el => {
+                    if (el) {
+                        el.style.backgroundImage = `url('${imageUrl}')`;
+                        el.style.backgroundSize = 'cover';
+                        el.style.backgroundPosition = 'center';
+                    }
+                });
+            }
+            reader.readAsDataURL(file);
+        }
+
+        avatarInput.addEventListener('change', function(e) {
+            if (e.target.files && e.target.files[0]) {
+                handleAvatarUpload(e.target.files[0], [userAvatar, settingsAvatar]);
+            }
+        });
+
+        settingsAvatarEdit.addEventListener('click', function() {
+            settingsAvatarInput.click();
+        });
+
+        settingsAvatarInput.addEventListener('change', function(e) {
+            if (e.target.files && e.target.files[0]) {
+                handleAvatarUpload(e.target.files[0], [userAvatar, settingsAvatar]);
+            }
+        });
+
+        settingsProfileBtn.addEventListener('click', function() {
+            navItems.forEach(nav => nav.classList.remove('active'));
+            navItems[4].classList.add('active'); // Settings
+            homePage.classList.add('hidden');
+            searchPage.classList.add('hidden');
+            libraryPage.classList.add('hidden');
+            premiumPage.classList.add('hidden');
+            settingsPage.classList.remove('hidden');
+        });
+
+        // Авторизация
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            currentUser = { name: 'Пилип' };
+            updateUserNames();
+            authModal.classList.add('hidden');
+            player.classList.remove('hidden');
+        });
+
+        document.getElementById('registerBtn').addEventListener('click', () => {
+            const name = document.getElementById('regName').value || 'Пилип';
+            currentUser = { name };
+            updateUserNames();
+            authModal.classList.add('hidden');
+            player.classList.remove('hidden');
+        });
+
+        function updateUserNames() {
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('greetingName').textContent = currentUser.name;
+            document.getElementById('settingsUserName').textContent = currentUser.name;
+        }
+
+        // Навигация
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                navItems.forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+
+                const page = item.dataset.page;
+                homePage.classList.add('hidden');
+                searchPage.classList.add('hidden');
+                libraryPage.classList.add('hidden');
+                premiumPage.classList.add('hidden');
+                settingsPage.classList.add('hidden');
+
+                if (page === 'home') {
+                    homePage.classList.remove('hidden');
+                } else if (page === 'search') {
+                    searchPage.classList.remove('hidden');
+                } else if (page === 'library') {
+                    libraryPage.classList.remove('hidden');
+                } else if (page === 'premium') {
+                    premiumPage.classList.remove('hidden');
+                } else if (page === 'settings') {
+                    settingsPage.classList.remove('hidden');
+                }
+            });
+        });
+
+        // Меню настроек
+        settingsMenuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                settingsMenuItems.forEach(menu => menu.classList.remove('active'));
+                item.classList.add('active');
+
+                const section = item.dataset.settings;
+                settingsSections.forEach(sec => sec.classList.remove('active'));
+                document.getElementById(section + 'Section').classList.add('active');
+            });
+        });
+
+        // Смена темы
+        themeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                themeOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+
+                const theme = option.dataset.theme;
+                document.body.className = theme + '-theme';
+                currentTheme = theme;
+            });
+        });
+
+        // Смена языка
+        languageOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                languageOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                currentLanguage = option.dataset.lang;
+
+                const translations = {
+                    ru: {
+                        home: 'Главная',
+                        search: 'Поиск',
+                        library: 'Моя медиатека',
+                        premium: 'Premium',
+                        settings: 'Настройки'
+                    },
+                    uk: {
+                        home: 'Головна',
+                        search: 'Пошук',
+                        library: 'Моя медіатека',
+                        premium: 'Premium',
+                        settings: 'Налаштування'
+                    },
+                    en: {
+                        home: 'Home',
+                        search: 'Search',
+                        library: 'My Library',
+                        premium: 'Premium',
+                        settings: 'Settings'
+                    }
+                };
+
+                const t = translations[currentLanguage];
+                if (t) {
+                    navItems[0].textContent = t.home;
+                    navItems[1].textContent = t.search;
+                    navItems[2].textContent = t.library;
+                    navItems[3].textContent = t.premium;
+                    navItems[4].textContent = t.settings;
+                }
+            });
+        });
+
+        // Плеер
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        playPauseBtn.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            if (isPlaying) {
+                playPauseBtn.classList.remove('fa-play-circle');
+                playPauseBtn.classList.add('fa-pause-circle');
+            } else {
+                playPauseBtn.classList.remove('fa-pause-circle');
+                playPauseBtn.classList.add('fa-play-circle');
+            }
+        });
+
+        // Тогглы
+        document.querySelectorAll('.toggle-switch').forEach(toggle => {
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggle.classList.toggle('active');
+            });
+        });
+
+        // Громкость
+        const volumeBar = document.getElementById('volumeBar');
+        const volumeProgress = document.getElementById('volumeProgress');
+
+        volumeBar.addEventListener('click', (e) => {
+            const rect = volumeBar.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const width = rect.width;
+            const volume = (x / width) * 100;
+            volumeProgress.style.width = volume + '%';
+        });
+
+        // Выход
+        logoutBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                player.classList.add('hidden');
+                authModal.classList.remove('hidden');
+            });
+        });
+
+        // Кнопка домой
+        homeBtn.addEventListener('click', () => {
+            navItems.forEach(nav => nav.classList.remove('active'));
+            navItems[0].classList.add('active');
+            homePage.classList.remove('hidden');
+            searchPage.classList.add('hidden');
+            libraryPage.classList.add('hidden');
+            premiumPage.classList.add('hidden');
+            settingsPage.classList.add('hidden');
+        });
+
+        // Premium кнопка
+        document.getElementById('startPremiumBtn').addEventListener('click', () => {
+            alert('🎵 Добро пожаловать в Premium! 30 дней бесплатно активировано.');
+        });
+
+        // Инициализация
+        updateUserNames();
+    </script>
+</body>
+</html>
